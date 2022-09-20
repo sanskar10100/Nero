@@ -21,6 +21,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField "String", "BASE_URL", "\"https://www.googleapis.com/books/v1/\""
     }
 
     buildTypes {
@@ -73,6 +75,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
 
     // Utility
+    implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'io.coil-kt:coil-compose:2.2.0'
 
     // DI
