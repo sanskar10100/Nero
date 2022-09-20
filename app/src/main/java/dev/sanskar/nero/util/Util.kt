@@ -1,0 +1,22 @@
+package dev.sanskar.nero.util
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+
+fun <T> oneShotFlow() = MutableSharedFlow<T>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+
+@Composable
+fun startAnimationOnAdd(): Boolean {
+    var state by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        state = true
+    }
+    return state
+}
+

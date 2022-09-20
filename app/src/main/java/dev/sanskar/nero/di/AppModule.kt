@@ -1,12 +1,16 @@
 package dev.sanskar.nero.di
 
+import android.content.Context
+import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sanskar.nero.BuildConfig
+import dev.sanskar.nero.db.NeroDatabase
 import dev.sanskar.nero.network.GoogleBooksService
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -33,11 +37,11 @@ object AppModule {
     @Provides
     fun provideBackendService(retrofit: Retrofit): GoogleBooksService = retrofit.create(GoogleBooksService::class.java)
 
-//    @Singleton
-//    @Provides
-//    fun provideRoomDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
-//        context,
-//        PhotoPlayDB::class.java,
-//        "photoplay_db"
-//    ).fallbackToDestructiveMigration().build()
+    @Singleton
+    @Provides
+    fun provideRoomDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
+        context,
+        NeroDatabase::class.java,
+        "photoplay_db"
+    ).build()
 }
