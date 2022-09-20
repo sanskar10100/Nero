@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -114,6 +115,22 @@ class MainActivity : ComponentActivity() {
                     icon = { Icon(Screen.Stats.icon, contentDescription = null) }
                 )
             }
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun BottomNavPreview() {
+        NeroTheme {
+            BottomNav(rememberNavController())
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun MainContentPreview() {
+        NeroTheme {
+            MainContent()
         }
     }
 }
