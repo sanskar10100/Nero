@@ -37,3 +37,20 @@ data class IndustryIdentifier(
     val identifier: String,
     val type: String
 )
+
+fun GoogleBooksVolume.toBook() = Book(
+    id,
+    volumeInfo.title,
+    volumeInfo.subtitle,
+    volumeInfo.description,
+    volumeInfo.authors,
+    volumeInfo.publisher,
+    volumeInfo.publishedDate,
+    0,
+    volumeInfo.pageCount,
+    volumeInfo.industryIdentifiers.map { it.identifier },
+    volumeInfo.categories,
+    volumeInfo.imageLinks.thumbnail,
+    volumeInfo.averageRating,
+    volumeInfo.ratingsCount
+)

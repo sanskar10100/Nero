@@ -44,4 +44,8 @@ object AppModule {
         NeroDatabase::class.java,
         "photoplay_db"
     ).build()
+
+    @Singleton
+    @Provides
+    fun provideBookDao(db: NeroDatabase) = db.bookDao()
 }

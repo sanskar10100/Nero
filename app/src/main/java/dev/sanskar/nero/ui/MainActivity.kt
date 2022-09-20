@@ -1,8 +1,10 @@
-package dev.sanskar.nero
+package dev.sanskar.nero.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
@@ -24,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -37,9 +40,12 @@ import dev.sanskar.nero.ui.StatsScreen
 import dev.sanskar.nero.ui.theme.NeroTheme
 import dev.sanskar.nero.util.Screen
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,7 +58,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun MainContent(modifier: Modifier = Modifier) {
-        var bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+        val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         val navController = rememberNavController()
         val scope = rememberCoroutineScope()
         ModalBottomSheetLayout(
@@ -60,7 +66,7 @@ class MainActivity : ComponentActivity() {
             sheetState = bottomSheetState,
             sheetElevation = 5.dp,
             sheetShape = RoundedCornerShape(16.dp),
-            sheetContent = { AddBook() }
+            sheetContent = { AddBook { viewModel.addSample() } }
         ) {
             Scaffold(
                 bottomBar = { BottomNav(navController = navController) },
@@ -72,8 +78,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             ) {
+                Timber.d("Here in composition")
                 NavHost(navController = navController, startDestination = Screen.Home.route) {
-                    composable(Screen.Home.route) { HomeScreen() }
+                    Timber.d("Here in composition 2")
+                    composable(Screen.Home.route) {
+                        HomeScreen(viewModel.books)
+                        Timber.d("Here in composition 3")
+                    }
                     composable(Screen.Stats.route) { StatsScreen() }
                 }
             }
@@ -87,7 +98,8 @@ class MainActivity : ComponentActivity() {
             derivedStateOf { navBackStackEntry?.destination?.route }
         }
         BottomAppBar(
-            modifier = modifier,
+            modifier = modifier
+                .clip(RoundedCornerShape(topStart = 32f, topEnd = 32f)),
             cutoutShape = CircleShape
         ) {
             BottomNavigation {
