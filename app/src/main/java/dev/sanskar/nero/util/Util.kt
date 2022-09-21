@@ -29,7 +29,7 @@ suspend fun <T> networkResult(call: suspend () -> T): UiState<T> {
         UiState.Success(result)
     } catch (e: Exception) {
         e.printStackTrace()
-        Timber.d("NetworkResult", "Network call failed for $call, exception: $e, message: ${e.message}")
+        Timber.d("Network call failed for $call, exception: $e, message: ${e.message}")
         if (e is HttpException) {
             UiState.Error("An expected error occurred, code: ${e.code()}")
         } else {

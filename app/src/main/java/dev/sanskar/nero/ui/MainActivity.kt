@@ -78,15 +78,10 @@ class MainActivity : ComponentActivity() {
                         Icon(imageVector = Icons.Default.AddBox, contentDescription = null)
                     }
                 }
-            ) {
-                Timber.d("Here in composition")
+            ) { padding ->
                 NavHost(navController = navController, startDestination = Screen.Home.route) {
-                    Timber.d("Here in composition 2")
-                    composable(Screen.Home.route) {
-                        HomeScreen(viewModel.books)
-                        Timber.d("Here in composition 3")
-                    }
-                    composable(Screen.Stats.route) { StatsScreen() }
+                    composable(Screen.Home.route) { HomeScreen(viewModel.books, modifier = Modifier.padding(padding)) }
+                    composable(Screen.Stats.route) { StatsScreen(modifier = Modifier.padding(padding)) }
                 }
             }
         }

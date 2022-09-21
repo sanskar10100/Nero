@@ -46,11 +46,11 @@ fun GoogleBooksVolume.toBook() = Book(
     volumeInfo.authors,
     volumeInfo.publisher,
     volumeInfo.publishedDate,
-    0,
+    1,
     volumeInfo.pageCount,
     volumeInfo.industryIdentifiers.map { it.identifier },
     volumeInfo.categories,
-    volumeInfo.imageLinks.thumbnail,
+    "https://" + volumeInfo.imageLinks.thumbnail.removePrefix("http://").removePrefix("https://"),
     volumeInfo.averageRating,
     volumeInfo.ratingsCount
 )
