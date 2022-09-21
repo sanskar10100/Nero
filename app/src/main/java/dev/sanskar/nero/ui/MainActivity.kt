@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,12 +39,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sanskar.nero.ui.AddBook
 import dev.sanskar.nero.ui.HomeScreen
 import dev.sanskar.nero.ui.StatsScreen
 import dev.sanskar.nero.ui.theme.NeroTheme
 import dev.sanskar.nero.util.Screen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -62,20 +65,32 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainContent(
         modifier: Modifier = Modifier,
+        viewModel: MainViewModel = hiltViewModel(),
     ) {
-        val bottomSheetState = rememberModalBottomSheetState(
-            initialValue = ModalBottomSheetValue.Hidden,
-            skipHalfExpanded = true
-        )
+        val keyboardController = LocalSoftwareKeyboardController.current
         val navController = rememberNavController()
         val scope = rememberCoroutineScope()
-        val keyboardController = LocalSoftwareKeyboardController.current
+
+        val bottomSheetState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true,
+        )
+
+        LaunchedEffect(bottomSheetState.targetValue) {
+            if (bottomSheetState.targetValue == ModalBottomSheetValue.Hidden) {
+                viewModel.clearSearchState()
+                keyboardController?.hide()
+            } else {
+                keyboardController?.show()
+            }
+        }
+
         ModalBottomSheetLayout(
             modifier = modifier,
             sheetState = bottomSheetState,
             sheetElevation = 5.dp,
             sheetShape = RoundedCornerShape(16.dp),
-            sheetContent = { AddBook() }
+            sheetContent = { AddBook { scope.launch { bottomSheetState.hide() } } }
         ) {
             Scaffold(
                 bottomBar = { BottomNav(navController = navController) },
@@ -86,7 +101,6 @@ class MainActivity : ComponentActivity() {
                         scope.launch {
                             bottomSheetState.animateTo(ModalBottomSheetValue.Expanded)
                         }
-                        keyboardController?.show()
                     }
                     ) {
                         Icon(imageVector = Icons.Default.AddBox, contentDescription = null)
@@ -115,7 +129,7 @@ class MainActivity : ComponentActivity() {
             BottomNavigation {
                 BottomNavigationItem(
                     selected = currentScreenRoute == Screen.Home.route,
-                    onClick = { if (currentScreenRoute != Screen.Home.route) navController.navigate(Screen.Home.route) },
+                    onClick = { if (currentScreenRoute != Screen.Home.route) navController.popBackStack() },
                     icon = { Icon(Screen.Home.icon, contentDescription = null) }
                 )
                 BottomNavigationItem(
