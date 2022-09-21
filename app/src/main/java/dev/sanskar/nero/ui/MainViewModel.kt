@@ -1,7 +1,6 @@
 package dev.sanskar.nero.ui
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,9 +12,7 @@ import dev.sanskar.nero.util.UiState
 import dev.sanskar.nero.util.networkResult
 import dev.sanskar.nero.util.replaceWith
 import javax.inject.Inject
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -25,12 +22,14 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val books = mutableStateListOf<Book>()
+    var searchJob: Job? = null
+    val googleBooksSearchResult = mutableStateListOf<Book>()
 
     init {
         getBooks()
     }
 
-    fun getBooks() {
+    private fun getBooks() {
         viewModelScope.launch {
             bookDao.getBooks().collect {
                 books.replaceWith(it)
@@ -38,11 +37,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addSample() {
+    fun addBook(book: Book) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            bookDao.insertBook(book)
+        }
+    }
+
+    fun searchGoogleBooks(query: String) {
         viewModelScope.launch {
-            val result = networkResult { api.getBooks("androids") }
+            val result = networkResult { api.getBooks(query) }
             if (result is UiState.Success) {
-                bookDao.insertBooks(result.data.items.map { it.toBook() })
+                googleBooksSearchResult.replaceWith(result.data.items.map { it.toBook() })
             }
         }
     }

@@ -44,17 +44,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.sanskar.nero.R
 import dev.sanskar.nero.data.Book
+import dev.sanskar.nero.ui.components.BookRow
 import dev.sanskar.nero.ui.theme.NeroTheme
 
 @Composable
-fun HomeScreen(books: SnapshotStateList<Book>, modifier: Modifier = Modifier) {
-    val finishedBooks by derivedStateOf { books.filter { it.currentPage == it.pageCount } }
-    val currentlyReadingBooks by derivedStateOf { books.filter { it.currentPage > 1 && it.currentPage < it.pageCount } }
-    val notStartedBooks by derivedStateOf { books.filter { it.currentPage == 1 } }
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
+) {
+    val finishedBooks by derivedStateOf { viewModel.books.filter { it.currentPage == it.pageCount } }
+    val currentlyReadingBooks by derivedStateOf { viewModel.books.filter { it.currentPage > 1 && it.currentPage < it.pageCount } }
+    val notStartedBooks by derivedStateOf { viewModel.books.filter { it.currentPage == 1 } }
     LazyColumn(
         modifier = modifier
     ) {
@@ -102,104 +107,6 @@ fun HomeScreen(books: SnapshotStateList<Book>, modifier: Modifier = Modifier) {
             items(finishedBooks) { book ->
                 BookRow(book) {}
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun BookRow(
-    book: Book,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    val animatedAlpha by rememberInfiniteTransition().animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.8f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-    var imageLoaded by remember { mutableStateOf(false) }
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        elevation = 2.dp,
-        shape = RoundedCornerShape(8.dp),
-        onClick = onClick
-    ) {
-        Row(
-            modifier = Modifier
-                .height(IntrinsicSize.Min),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = book.thumbnail,
-                contentDescription = "Book Thumbnail",
-                modifier = Modifier
-                    .width(128.dp),
-                placeholder = painterResource(id = R.drawable.placeholder),
-                error = painterResource(id = R.drawable.error),
-                onError = { imageLoaded = true },
-                onSuccess = { imageLoaded = true },
-                alpha = if (imageLoaded) 1f else animatedAlpha,
-                contentScale = ContentScale.Crop,
-            )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(16.dp)
-                    .weight(1f)
-            ) {
-                Text(
-                    text = book.title,
-                    style = MaterialTheme.typography.h6,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = book.authors.joinToString(", "),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(16.dp))
-                LinearProgressIndicator(
-                    progress = book.currentPage.toFloat() / book.pageCount,
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BookRowPreview() {
-    NeroTheme {
-        BookRow(
-            Book(
-                "1",
-                "A Brief History of Time",
-                subtitle = "Let's find out more about the universe",
-                description = "A monumental popular science book written by physicist Stephen Hawking that helps you learn how the universe works.",
-                authors = listOf("Stephen Hawking"),
-                publisher = "Bantam Books",
-                publishedDate = "1988",
-                currentPage = 1,
-                pageCount = 256,
-                isbn = listOf("0553380168", "9780553380163"),
-                categories = listOf("Non-fiction", "Science"),
-                thumbnail = "http://books.google.com/books/content?id=3OTPMeElnW0C&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-                averageRating = 5.0,
-                ratingsCount = 1,
-            )
-        ) {
-
         }
     }
 }

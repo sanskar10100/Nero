@@ -25,10 +25,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,8 +49,6 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val viewModel by viewModels<MainViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -56,31 +58,43 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
     @Composable
-    fun MainContent(modifier: Modifier = Modifier) {
-        val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    fun MainContent(
+        modifier: Modifier = Modifier,
+    ) {
+        val bottomSheetState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true
+        )
         val navController = rememberNavController()
         val scope = rememberCoroutineScope()
+        val keyboardController = LocalSoftwareKeyboardController.current
         ModalBottomSheetLayout(
             modifier = modifier,
             sheetState = bottomSheetState,
             sheetElevation = 5.dp,
             sheetShape = RoundedCornerShape(16.dp),
-            sheetContent = { AddBook { viewModel.addSample() } }
+            sheetContent = { AddBook() }
         ) {
             Scaffold(
                 bottomBar = { BottomNav(navController = navController) },
                 isFloatingActionButtonDocked = true,
                 floatingActionButtonPosition = FabPosition.Center,
                 floatingActionButton = {
-                    FloatingActionButton(onClick = { scope.launch { bottomSheetState.show() } }) {
+                    FloatingActionButton(onClick = {
+                        scope.launch {
+                            bottomSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                        }
+                        keyboardController?.show()
+                    }
+                    ) {
                         Icon(imageVector = Icons.Default.AddBox, contentDescription = null)
                     }
                 }
             ) { padding ->
                 NavHost(navController = navController, startDestination = Screen.Home.route) {
-                    composable(Screen.Home.route) { HomeScreen(viewModel.books, modifier = Modifier.padding(padding)) }
+                    composable(Screen.Home.route) { HomeScreen(modifier = Modifier.padding(padding)) }
                     composable(Screen.Stats.route) { StatsScreen(modifier = Modifier.padding(padding)) }
                 }
             }
