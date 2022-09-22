@@ -57,7 +57,10 @@ fun PageDialog(
 
     val currentErrorState: () -> Boolean = {
         val currentInt = current.toIntOrNull()
-        current == "" || currentInt == null || currentInt > total.toInt() || currentInt < 1
+        current == "" ||
+        currentInt == null ||
+        currentInt > (total.toIntOrNull() ?: Int.MAX_VALUE) ||
+        currentInt < 1
     }
 
     val totalErrorState: () -> Boolean = {
@@ -111,8 +114,8 @@ fun PageDialog(
                 Spacer(Modifier.height(32.dp))
                 AnimatedVisibility(
                     (total.toIntOrNull() != initialTotalPages || current.toIntOrNull() != initialCurrentPage)
-                          &&
-                          (!currentErrorState() && !totalErrorState())
+                            &&
+                            (!currentErrorState() && !totalErrorState())
                 ) {
                     Button(
                         onClick = { onSave(current.toInt(), total.toInt()) },
@@ -192,7 +195,7 @@ private fun PageInputField(
     current: String,
     isError: () -> Boolean,
     label: String = "Current Page",
-    onChange: (String) -> Unit
+    onChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = current,
@@ -226,7 +229,7 @@ private fun TextFieldDivider(modifier: Modifier = Modifier) {
 @Composable
 fun PageDialogPreview() {
     NeroTheme {
-        PageDialog(initialCurrentPage = 50, initialTotalPages = 200) { current, total->
+        PageDialog(initialCurrentPage = 50, initialTotalPages = 200) { current, total ->
 
         }
     }

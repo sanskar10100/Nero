@@ -109,7 +109,6 @@ private fun ReadCountButton(book: Book, onClick: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AdditionalDetails(book: Book, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
