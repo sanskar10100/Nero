@@ -2,6 +2,8 @@ package dev.sanskar.nero.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlin.math.ceil
+import kotlin.math.floor
 
 @Entity(tableName = "books")
 data class Book(
@@ -20,3 +22,22 @@ data class Book(
     val averageRating: Double = 0.0,
     val ratingsCount: Int = 0,
 )
+
+val Book.progress: Float // Remove any fractional part when calculating for neater UI
+get() = if (pageCount == -1) 0f else (currentPage.toFloat() / pageCount).toInt().toFloat()
+
+val Book.publishingDetails: String
+get() {
+    var details = ""
+    if (publisher.isNotEmpty()) {
+        details = "Published by $publisher"
+    }
+    if (publishedDate.isNotEmpty()) {
+        if (publisher.isEmpty()) {
+            details = publishedDate
+        } else {
+            details += ", $publishedDate"
+        }
+    }
+    return details
+}

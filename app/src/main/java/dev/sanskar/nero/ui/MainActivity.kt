@@ -130,6 +130,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         DetailScreen(
                             bookId = it.arguments?.getString("book_id") ?: "",
+                            modifier = Modifier.padding(padding),
                             viewModel = hiltViewModel(it)
                         )
                     }

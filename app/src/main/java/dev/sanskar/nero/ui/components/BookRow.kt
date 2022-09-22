@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import dev.sanskar.nero.R
 import dev.sanskar.nero.data.Book
+import dev.sanskar.nero.data.progress
 import dev.sanskar.nero.ui.theme.NeroTheme
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -107,7 +108,7 @@ fun BookRow(
                 )
                 Spacer(Modifier.height(16.dp))
                 LinearProgressIndicator(
-                    progress = if (book.pageCount == -1) 0f else book.currentPage.toFloat() / book.pageCount,
+                    progress = book.progress,
                 )
             }
         }

@@ -17,7 +17,7 @@ data class VolumeInfo(
     val averageRating: Double = 0.0,
     val categories: List<String> = listOf(),
     val description: String = "",
-    val imageLinks: ImageLinks,
+    val imageLinks: ImageLinks = ImageLinks(),
     val industryIdentifiers: List<IndustryIdentifier> = listOf(),
     val language: String,
     val pageCount: Int = -1,
@@ -29,8 +29,8 @@ data class VolumeInfo(
 )
 
 data class ImageLinks(
-    val smallThumbnail: String,
-    val thumbnail: String
+    val smallThumbnail: String = "",
+    val thumbnail: String = ""
 )
 
 data class IndustryIdentifier(
