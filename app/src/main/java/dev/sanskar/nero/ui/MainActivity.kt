@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -40,7 +41,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import dev.sanskar.nero.ui.add.AddBook
+import dev.sanskar.nero.ui.add.AddScreen
+import dev.sanskar.nero.ui.add.AddViewModel
 import dev.sanskar.nero.ui.detail.DetailScreen
 import dev.sanskar.nero.ui.home.HomeScreen
 import dev.sanskar.nero.ui.stats.StatsScreen
@@ -64,6 +66,7 @@ class MainActivity : ComponentActivity() {
     fun MainContent(
         modifier: Modifier = Modifier,
     ) {
+        val addViewModel: AddViewModel = hiltViewModel() // Needed for clearing bottom sheet state
         val keyboardController = LocalSoftwareKeyboardController.current
         val navController = rememberNavController()
         val scope = rememberCoroutineScope()
@@ -76,6 +79,7 @@ class MainActivity : ComponentActivity() {
         LaunchedEffect(bottomSheetState.targetValue) {
             if (bottomSheetState.targetValue == ModalBottomSheetValue.Hidden) {
                 keyboardController?.hide()
+                addViewModel.clearSearchState()
             } else {
                 keyboardController?.show()
             }
@@ -86,7 +90,7 @@ class MainActivity : ComponentActivity() {
             sheetState = bottomSheetState,
             sheetElevation = 5.dp,
             sheetShape = RoundedCornerShape(16.dp),
-            sheetContent = { AddBook { scope.launch { bottomSheetState.hide() } } }
+            sheetContent = { AddScreen(viewModel = addViewModel) { scope.launch { bottomSheetState.hide() } } }
         ) {
             Scaffold(
                 bottomBar = { BottomNav(navController = navController) },
@@ -135,7 +139,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun BottomNav(navController: NavController,  modifier: Modifier = Modifier) {
+    fun BottomNav(navController: NavController, modifier: Modifier = Modifier) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentScreenRoute by remember {
             derivedStateOf { navBackStackEntry?.destination?.route }
@@ -153,7 +157,11 @@ class MainActivity : ComponentActivity() {
                 )
                 BottomNavigationItem(
                     selected = currentScreenRoute == Screen.Stats.route,
-                    onClick = { if (currentScreenRoute != Screen.Stats.route) navController.navigate(Screen.Stats.route) },
+                    onClick = {
+                        if (currentScreenRoute != Screen.Stats.route) navController.navigate(
+                            Screen.Stats.route
+                        )
+                    },
                     icon = { Icon(Screen.Stats.icon!!, contentDescription = null) }
                 )
             }

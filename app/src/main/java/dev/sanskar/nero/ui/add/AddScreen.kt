@@ -24,7 +24,7 @@ import dev.sanskar.nero.R
 import dev.sanskar.nero.ui.components.BookRow
 
 @Composable
-fun AddBook(
+fun AddScreen(
     modifier: Modifier = Modifier,
     viewModel: AddViewModel = hiltViewModel(),
     onSelected: () -> Unit
