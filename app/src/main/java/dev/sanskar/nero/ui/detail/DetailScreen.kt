@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -21,6 +22,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -41,6 +43,7 @@ import coil.compose.AsyncImage
 import dev.sanskar.nero.data.Book
 import dev.sanskar.nero.data.progress
 import dev.sanskar.nero.data.publishingDetails
+import dev.sanskar.nero.util.clickWithRipple
 
 @Composable
 fun DetailScreen(
@@ -110,23 +113,29 @@ private fun ReadCountButton(book: Book, onClick: () -> Unit) {
 @Composable
 fun AdditionalDetails(book: Book, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
-    Card(
-        onClick = { expanded = !expanded },
+    Surface(
         modifier = modifier
-            .padding(16.dp)
+            .padding(16.dp),
+        elevation = 3.dp,
+        shape = RoundedCornerShape(4.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickWithRipple {
+                        expanded = !expanded
+                    },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     "Additional Details",
                     style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .padding(16.dp)
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(
@@ -136,25 +145,26 @@ fun AdditionalDetails(book: Book, modifier: Modifier = Modifier) {
                 )
             }
             AnimatedVisibility(visible = expanded) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                ) {
-                    if (book.subtitle.isNotEmpty()) Text(
-                        text = book.subtitle
-                    )
+                SelectionContainer {
 
-                    if (book.description.isNotEmpty()) Text(
-                        text = book.description
-                    )
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        if (book.subtitle.isNotEmpty()) Text(
+                            text = book.subtitle
+                        )
 
-                    if (book.publishingDetails.isNotEmpty()) {
-                        Spacer(Modifier.height(16.dp))
-                        Text(book.publishingDetails)
-                    }
+                        if (book.description.isNotEmpty()) Text(
+                            text = book.description
+                        )
 
-                    if (book.isbn.isNotEmpty()) {
-                        Spacer(Modifier.height(16.dp))
-                        SelectionContainer {
+                        if (book.publishingDetails.isNotEmpty()) {
+                            Spacer(Modifier.height(16.dp))
+                            Text(book.publishingDetails)
+                        }
+
+                        if (book.isbn.isNotEmpty()) {
+                            Spacer(Modifier.height(16.dp))
                             Text(
                                 text = "ISBNs: ${book.isbn.joinToString(", ")}"
                             )
