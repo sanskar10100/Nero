@@ -55,5 +55,9 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideBookDao(db: NeroDatabase) = db.bookDao()
+    fun provideBooksDao(db: NeroDatabase) = db.bookDao()
+
+    @Singleton
+    @Provides
+    fun provideProgressDao(db: NeroDatabase) = db.progressDao()
 }

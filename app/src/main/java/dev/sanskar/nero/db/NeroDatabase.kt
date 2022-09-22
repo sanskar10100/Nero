@@ -10,6 +10,6 @@ import dev.sanskar.nero.util.Converters
 @Database(entities = [Book::class, Progress::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class NeroDatabase : RoomDatabase() {
-    abstract fun bookDao(): BookDao
+    abstract fun bookDao(): BooksDao
     abstract fun progressDao(): ProgressDao
 }

@@ -3,7 +3,6 @@ package dev.sanskar.nero.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +25,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,17 +38,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import dev.sanskar.nero.ui.AddBook
-import dev.sanskar.nero.ui.HomeScreen
-import dev.sanskar.nero.ui.StatsScreen
+import dev.sanskar.nero.ui.add.AddBook
+import dev.sanskar.nero.ui.detail.DetailScreen
+import dev.sanskar.nero.ui.home.HomeScreen
+import dev.sanskar.nero.ui.stats.StatsScreen
 import dev.sanskar.nero.ui.theme.NeroTheme
 import dev.sanskar.nero.util.Screen
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -67,7 +63,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainContent(
         modifier: Modifier = Modifier,
-        viewModel: MainViewModel = hiltViewModel(),
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
         val navController = rememberNavController()
@@ -80,7 +75,6 @@ class MainActivity : ComponentActivity() {
 
         LaunchedEffect(bottomSheetState.targetValue) {
             if (bottomSheetState.targetValue == ModalBottomSheetValue.Hidden) {
-                viewModel.clearSearchState()
                 keyboardController?.hide()
             } else {
                 keyboardController?.show()
@@ -110,15 +104,30 @@ class MainActivity : ComponentActivity() {
                 }
             ) { padding ->
                 NavHost(navController = navController, startDestination = Screen.Home.route) {
-                    composable(Screen.Home.route) { HomeScreen(modifier = Modifier.padding(padding)) {
-                        navController.navigate("${Screen.BookDetail.route}/${it}")
-                    } }
-                    composable(Screen.Stats.route) { StatsScreen(modifier = Modifier.padding(padding)) }
+
+                    composable(Screen.Home.route) {
+                        HomeScreen(
+                            modifier = Modifier.padding(padding),
+                            viewModel = hiltViewModel(it)
+                        ) {
+                            navController.navigate("${Screen.BookDetail.route}/${it}")
+                        }
+                    }
+
+                    composable(Screen.Stats.route) {
+                        StatsScreen(
+                            modifier = Modifier.padding(padding),
+                        )
+                    }
+
                     composable(
                         "${Screen.BookDetail.route}/{book_id}",
                         arguments = listOf(navArgument("book_id") { type = NavType.StringType })
                     ) {
-                        BookDetail(bookId = it.arguments?.getString("book_id") ?: "")
+                        DetailScreen(
+                            bookId = it.arguments?.getString("book_id") ?: "",
+                            viewModel = hiltViewModel(it)
+                        )
                     }
                 }
             }

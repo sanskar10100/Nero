@@ -1,4 +1,4 @@
-package dev.sanskar.nero.ui
+package dev.sanskar.nero.ui.stats
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button

@@ -1,8 +1,6 @@
-package dev.sanskar.nero.ui
+package dev.sanskar.nero.ui.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,14 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.sanskar.nero.data.Book
 import dev.sanskar.nero.ui.components.BookRow
 import dev.sanskar.nero.ui.components.EmptyLottie
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
     onBookClicked: (String) -> Unit
 ) {
     val finishedBooks by derivedStateOf { viewModel.books.filter { it.currentPage == it.pageCount } }

@@ -8,7 +8,7 @@ import dev.sanskar.nero.data.Book
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface BookDao {
+interface BooksDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertBook(book: Book)
