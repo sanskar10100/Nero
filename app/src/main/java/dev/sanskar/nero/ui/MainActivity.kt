@@ -35,11 +35,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.findNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sanskar.nero.ui.AddBook
 import dev.sanskar.nero.ui.HomeScreen
@@ -108,8 +110,16 @@ class MainActivity : ComponentActivity() {
                 }
             ) { padding ->
                 NavHost(navController = navController, startDestination = Screen.Home.route) {
-                    composable(Screen.Home.route) { HomeScreen(modifier = Modifier.padding(padding)) }
+                    composable(Screen.Home.route) { HomeScreen(modifier = Modifier.padding(padding)) {
+                        navController.navigate("${Screen.BookDetail.route}/${it}")
+                    } }
                     composable(Screen.Stats.route) { StatsScreen(modifier = Modifier.padding(padding)) }
+                    composable(
+                        "${Screen.BookDetail.route}/{book_id}",
+                        arguments = listOf(navArgument("book_id") { type = NavType.StringType })
+                    ) {
+                        BookDetail(bookId = it.arguments?.getString("book_id") ?: "")
+                    }
                 }
             }
         }
@@ -130,12 +140,12 @@ class MainActivity : ComponentActivity() {
                 BottomNavigationItem(
                     selected = currentScreenRoute == Screen.Home.route,
                     onClick = { if (currentScreenRoute != Screen.Home.route) navController.popBackStack() },
-                    icon = { Icon(Screen.Home.icon, contentDescription = null) }
+                    icon = { Icon(Screen.Home.icon!!, contentDescription = null) }
                 )
                 BottomNavigationItem(
                     selected = currentScreenRoute == Screen.Stats.route,
                     onClick = { if (currentScreenRoute != Screen.Stats.route) navController.navigate(Screen.Stats.route) },
-                    icon = { Icon(Screen.Stats.icon, contentDescription = null) }
+                    icon = { Icon(Screen.Stats.icon!!, contentDescription = null) }
                 )
             }
         }

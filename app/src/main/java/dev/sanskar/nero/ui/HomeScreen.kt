@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import dev.sanskar.nero.data.Book
 import dev.sanskar.nero.ui.components.BookRow
 import dev.sanskar.nero.ui.components.EmptyLottie
 
@@ -23,6 +24,7 @@ import dev.sanskar.nero.ui.components.EmptyLottie
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
+    onBookClicked: (String) -> Unit
 ) {
     val finishedBooks by derivedStateOf { viewModel.books.filter { it.currentPage == it.pageCount } }
     val currentlyReadingBooks by derivedStateOf { viewModel.books.filter { it.currentPage > 1 && it.currentPage < it.pageCount } }
@@ -48,7 +50,7 @@ fun HomeScreen(
                 )
             }
             items(currentlyReadingBooks) { book ->
-                BookRow(book) {}
+                BookRow(book) { onBookClicked(book.id) }
             }
         }
         if (notStartedBooks.isNotEmpty()) {
@@ -63,7 +65,7 @@ fun HomeScreen(
                 )
             }
             items(notStartedBooks) { book ->
-                BookRow(book) {}
+                BookRow(book) { onBookClicked(book.id) }
             }
         }
         if (finishedBooks.isNotEmpty()) {
@@ -78,7 +80,7 @@ fun HomeScreen(
                 )
             }
             items(finishedBooks) { book ->
-                BookRow(book) {}
+                BookRow(book) { onBookClicked(book.id) }
             }
         }
     }
