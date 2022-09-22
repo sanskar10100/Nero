@@ -2,6 +2,7 @@ package dev.sanskar.nero.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +14,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
@@ -76,6 +78,12 @@ class MainActivity : ComponentActivity() {
             skipHalfExpanded = true,
         )
 
+        BackHandler(bottomSheetState.targetValue == ModalBottomSheetValue.Expanded) {
+            scope.launch {
+                bottomSheetState.hide()
+            }
+        }
+
         LaunchedEffect(bottomSheetState.targetValue) {
             if (bottomSheetState.targetValue == ModalBottomSheetValue.Hidden) {
                 keyboardController?.hide()
@@ -97,13 +105,19 @@ class MainActivity : ComponentActivity() {
                 isFloatingActionButtonDocked = true,
                 floatingActionButtonPosition = FabPosition.Center,
                 floatingActionButton = {
-                    FloatingActionButton(onClick = {
+                    FloatingActionButton(
+                        backgroundColor = MaterialTheme.colors.primary,
+                        onClick = {
                         scope.launch {
                             bottomSheetState.animateTo(ModalBottomSheetValue.Expanded)
                         }
                     }
                     ) {
-                        Icon(imageVector = Icons.Default.AddBox, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.AddBox,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.onPrimary,
+                        )
                     }
                 }
             ) { padding ->

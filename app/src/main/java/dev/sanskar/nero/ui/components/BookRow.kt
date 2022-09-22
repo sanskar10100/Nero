@@ -48,6 +48,7 @@ import dev.sanskar.nero.ui.theme.NeroTheme
 fun BookRow(
     book: Book,
     modifier: Modifier = Modifier,
+    showProgressBar: Boolean = true,
     onClick: () -> Unit
 ) {
     val animatedAlpha by rememberInfiniteTransition().animateFloat(
@@ -107,7 +108,7 @@ fun BookRow(
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(16.dp))
-                LinearProgressIndicator(
+                if (showProgressBar) LinearProgressIndicator(
                     progress = book.progress,
                 )
             }

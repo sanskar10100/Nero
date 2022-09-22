@@ -24,7 +24,7 @@ data class Book(
 )
 
 val Book.progress: Float // Remove any fractional part when calculating for neater UI
-get() = if (pageCount == -1) 0f else currentPage.toFloat() / pageCount
+get() = if (pageCount == -1 || currentPage == 1) 0f else currentPage.toFloat() / pageCount
 
 val Book.publishingDetails: String
 get() {

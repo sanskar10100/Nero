@@ -57,7 +57,7 @@ fun AddScreen(
                 }
             }
             items(viewModel.googleBooksSearchResult, key = { it.id }) {
-                BookRow(it) {
+                BookRow(it, showProgressBar = false) {
                     viewModel.addBook(it)
                     onSelected()
                 }

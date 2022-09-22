@@ -2,8 +2,10 @@ package dev.sanskar.nero.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val Yellow200 = Color(0xFFFFF59D)
+val PrimaryDark = Color(0xFF303F9F)
+val PrimaryLight = Color(0xFF42A5F5)
+val Primary = Color(0xFF3F51B5)
+val Accent = Color(0xFFFFC107)
+
+val NotBlack = Color(0xFF212121)
+val White = Color(0xFFFFFFFF)

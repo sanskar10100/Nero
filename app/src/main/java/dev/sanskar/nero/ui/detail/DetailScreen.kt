@@ -41,8 +41,6 @@ import coil.compose.AsyncImage
 import dev.sanskar.nero.data.Book
 import dev.sanskar.nero.data.progress
 import dev.sanskar.nero.data.publishingDetails
-import dev.sanskar.nero.ui.theme.Teal200
-import dev.sanskar.nero.ui.theme.Yellow200
 
 @Composable
 fun DetailScreen(
@@ -88,7 +86,7 @@ private fun ReadCountButton(book: Book, onClick: () -> Unit) {
             .height(80.dp)
             .padding(horizontal = 16.dp),
         elevation = 5.dp,
-        backgroundColor = Teal200
+        backgroundColor = MaterialTheme.colors.secondary
     ) {
         Box {
             Text(
@@ -102,7 +100,7 @@ private fun ReadCountButton(book: Book, onClick: () -> Unit) {
                     .fillMaxWidth()
                     .height(8.dp)
                     .align(Alignment.BottomCenter),
-                backgroundColor = Teal200
+                color = MaterialTheme.colors.primaryVariant
             )
         }
     }
@@ -201,8 +199,9 @@ private fun Header(book: Book, modifier: Modifier = Modifier) {
                     text = it,
                     style = MaterialTheme.typography.subtitle2,
                     modifier = Modifier
-                        .background(Yellow200)
-                        .padding(8.dp)
+                        .background(MaterialTheme.colors.secondary)
+                        .padding(8.dp),
+                    color = MaterialTheme.colors.onSecondary
                 )
             }
         }
