@@ -9,5 +9,5 @@ data class Progress(
     val bookId: String,
     val pagesRead: Int,
     val timeRead: Long,
-    val date: String,
+    val date: Long,
 )

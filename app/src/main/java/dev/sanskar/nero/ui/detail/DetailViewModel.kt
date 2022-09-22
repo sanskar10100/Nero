@@ -11,6 +11,7 @@ import dev.sanskar.nero.data.Book
 import dev.sanskar.nero.db.BooksDao
 import dev.sanskar.nero.db.ProgressDao
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -23,7 +24,22 @@ class DetailViewModel @Inject constructor(
 
     fun getBook(bookId: String) {
         viewModelScope.launch {
-            book = booksDao.getBookOneShot(bookId) ?: throw java.lang.IllegalArgumentException("Book not found")
+            booksDao.getBook(bookId).collectLatest {
+                if (it != null) book = it
+                else throw IllegalArgumentException("Book not found")
+            }
+        }
+    }
+
+    fun updateProgress(bookId: String, current: Int, total: Int) {
+        viewModelScope.launch {
+            val book = booksDao.getBookOneShot(bookId) ?: throw IllegalArgumentException("Book not found")
+            if (book.pageCount != total) {
+                booksDao.updateBook(book.copy(pageCount = total))
+            }
+            if (book.currentPage != current) {
+                booksDao.updateBook(book.copy(currentPage = current))
+            }
         }
     }
 }

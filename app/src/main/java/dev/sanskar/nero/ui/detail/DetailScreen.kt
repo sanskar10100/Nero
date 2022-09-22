@@ -44,7 +44,6 @@ import dev.sanskar.nero.data.publishingDetails
 import dev.sanskar.nero.ui.theme.Teal200
 import dev.sanskar.nero.ui.theme.Yellow200
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DetailScreen(
     bookId: String,
@@ -55,6 +54,16 @@ fun DetailScreen(
         viewModel.getBook(bookId)
     }
 
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) PageDialog(
+        initialCurrentPage = viewModel.book.currentPage,
+        initialTotalPages = viewModel.book.pageCount
+    ) { current, total->
+        showDialog = false
+        viewModel.updateProgress(bookId, current, total)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -63,7 +72,7 @@ fun DetailScreen(
     ) {
         Header(viewModel.book)
         Spacer(Modifier.height(16.dp))
-        ReadCountButton(viewModel.book)
+        ReadCountButton(viewModel.book) { showDialog = true }
         Spacer(Modifier.height(16.dp))
         AdditionalDetails(viewModel.book)
     }
@@ -71,9 +80,9 @@ fun DetailScreen(
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
-private fun ReadCountButton(book: Book) {
+private fun ReadCountButton(book: Book, onClick: () -> Unit) {
     Card(
-        onClick = { },
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
