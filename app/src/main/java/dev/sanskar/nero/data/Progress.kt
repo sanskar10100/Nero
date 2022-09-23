@@ -19,3 +19,10 @@ fun List<Progress>.pagesReadForLastSevenDays() = this
         Pair(it.key.dropLast(4), it.value.sumOf { it.pagesRead })
     }
     .takeLast(7)
+
+fun List<Progress>.minutesReadForLastSevenDays() = this
+    .groupBy { it.date.toDayAndMonthAndYear() }
+    .map {
+        Pair(it.key.dropLast(4), it.value.sumOf { it.minutesRead })
+    }
+    .takeLast(7)
