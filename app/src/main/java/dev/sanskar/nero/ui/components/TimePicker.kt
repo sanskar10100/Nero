@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,12 +73,14 @@ fun VerticalNumberPicker(
                     FontWeight.Normal
                 },
                 modifier = Modifier
+                    .width(50.dp)
                     .clickable {
                         scope.launch {
                             lazyListState.animateScrollToItem(it - 1)
                         }
                     },
-                color = if (itemIsSelected(it)) selectedTextColor else textColor
+                color = if (itemIsSelected(it)) selectedTextColor else textColor,
+                textAlign = TextAlign.End
             )
         }
     }
@@ -90,10 +97,10 @@ fun TimePicker(modifier: Modifier = Modifier, onSelectedIndex: (Int, Int) -> Uni
     ) {
         Box {
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(177.dp)
+                    .height(177.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 val hourOptions = remember { (0..99).toList() }
                 val minuteOptions = remember { (0..59).toList() }
@@ -119,6 +126,7 @@ fun TimePicker(modifier: Modifier = Modifier, onSelectedIndex: (Int, Int) -> Uni
                         onSelectedIndex(selectedHourIndex, selectedMinuteIndex)
                     }
                 )
+
             }
 
             Box(
@@ -135,12 +143,23 @@ fun TimePicker(modifier: Modifier = Modifier, onSelectedIndex: (Int, Int) -> Uni
                         .background(MaterialTheme.colors.primary)
                 )
                 Text(
-                    text = ":",
-                    fontSize = 36.sp,
+                    text = "h",
+                    fontSize = 32.sp,
                     color = MaterialTheme.colors.onPrimary,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .offset(y = (-4).dp)
+                        .offset(x = -(15).dp),
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = "m",
+                    fontSize = 32.sp,
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .offset(x = -(25).dp),
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -151,9 +170,16 @@ fun TimePicker(modifier: Modifier = Modifier, onSelectedIndex: (Int, Int) -> Uni
 @Composable
 fun TimePickerPreview() {
     NeroTheme {
-        TimePicker(onSelectedIndex = { hour, minute ->
-            Timber.d("Selected hour: $hour, minute: $minute")
-        })
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            TimePicker(
+                modifier = Modifier.align(Alignment.Center),
+                onSelectedIndex = { hour, minute ->
+                    Timber.d("Selected hour: $hour, minute: $minute")
+                }
+            )
+        }
     }
 }
 
