@@ -144,7 +144,7 @@ private fun TimeInput(show: Boolean, onTimeChange: (Int) -> Unit) {
         Column {
             Spacer(Modifier.height(32.dp))
             Text(
-                text = "How much did you read today?",
+                text = "For how long did you read today?",
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(start = 8.dp)
             )

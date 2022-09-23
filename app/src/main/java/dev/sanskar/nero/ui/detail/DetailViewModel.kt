@@ -20,12 +20,19 @@ class DetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     var book by mutableStateOf(Book())
+    var progress by mutableStateOf<List<Progress>>(emptyList())
 
     fun getBook(bookId: String) {
         viewModelScope.launch {
             booksDao.getBook(bookId).collect {
                 if (it != null) book = it
                 else throw IllegalArgumentException("Book not found")
+            }
+        }
+
+        viewModelScope.launch {
+            progressDao.getProgress(bookId).collect {
+                progress = it
             }
         }
     }

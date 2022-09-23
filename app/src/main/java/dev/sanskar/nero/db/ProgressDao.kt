@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import dev.sanskar.nero.data.Progress
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProgressDao {
@@ -12,5 +13,5 @@ interface ProgressDao {
     suspend fun insertProgress(progress: Progress)
 
     @Query("SELECT * FROM progress WHERE bookId = :bookId")
-    suspend fun getProgress(bookId: String): List<Progress>
+    fun getProgress(bookId: String): Flow<List<Progress>>
 }
