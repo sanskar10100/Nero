@@ -135,6 +135,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Stats.route) {
                         StatsScreen(
                             modifier = Modifier.padding(padding),
+                            viewModel = hiltViewModel(it)
                         )
                     }
 

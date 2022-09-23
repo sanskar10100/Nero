@@ -24,16 +24,16 @@ fun <T> SnapshotStateList<T>.replaceWith(list: List<T>) {
     this.addAll(list)
 }
 
-fun Long.toDayAndMonth(): String {
-    val date = Date(this)
-    val format = SimpleDateFormat("dd MMM", Locale.getDefault())
-    return format.format(date)
-}
-
 fun Long.toDayAndMonthAndYear(): String {
     val date = Date(this)
     val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     return format.format(date)
+}
+
+fun Int.toHourAndMinute(): String {
+    val hour = this / 60
+    val minute = this % 60
+    return "$hour h $minute m"
 }
 
 infix fun Long.sameDateAs(date: Long): Boolean {

@@ -14,4 +14,10 @@ interface ProgressDao {
 
     @Query("SELECT * FROM progress WHERE bookId = :bookId")
     fun getProgress(bookId: String): Flow<List<Progress>>
+
+    @Query("SELECT SUM(minutesRead) FROM progress WHERE date >= :weekStart")
+    suspend fun getMinutesReadThisWeek(weekStart: Long): Int?
+
+    @Query("SELECT SUM(pagesRead) FROM progress WHERE date >= :weekStart")
+    suspend fun getPagesReadThisWeek(weekStart: Long): Int?
 }
