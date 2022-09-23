@@ -8,6 +8,6 @@ data class Progress(
     @PrimaryKey(autoGenerate = true) val progressId: Int,
     val bookId: String,
     val pagesRead: Int,
-    val timeRead: Long,
+    val minutesRead: Int,
     val date: Long,
 )

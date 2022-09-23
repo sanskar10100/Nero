@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,7 @@ import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import dev.sanskar.nero.ui.components.TimePicker
 import dev.sanskar.nero.ui.theme.NeroTheme
 import dev.sanskar.nero.util.clickWithRipple
 
@@ -49,11 +53,12 @@ fun PageDialog(
     initialCurrentPage: Int,
     initialTotalPages: Int,
     modifier: Modifier = Modifier,
-    onSave: (Int, Int) -> Unit,
+    onSave: (Int, Int, Int) -> Unit,
 ) {
     var current by remember { mutableStateOf(initialCurrentPage.toString()) }
     var total by remember { mutableStateOf(initialTotalPages.toString()) }
     var editTotal by remember { mutableStateOf(false) }
+    var time by remember { mutableStateOf(0) }
 
     val currentErrorState: () -> Boolean = {
         val currentInt = current.toIntOrNull()
@@ -73,7 +78,7 @@ fun PageDialog(
             if (editTotal) { // BackHandler doesn't work
                 editTotal = false
             } else {
-                onSave(initialCurrentPage, initialTotalPages)
+                onSave(initialCurrentPage, initialTotalPages, 0)
             }
         },
         properties = DialogProperties(
@@ -112,13 +117,14 @@ fun PageDialog(
                     onChange = { total = it },
                 )
                 Spacer(Modifier.height(32.dp))
+                TimeInput((current.toIntOrNull() ?: -1) > initialCurrentPage) { time = it }
                 AnimatedVisibility(
                     (total.toIntOrNull() != initialTotalPages || current.toIntOrNull() != initialCurrentPage)
                             &&
                             (!currentErrorState() && !totalErrorState())
                 ) {
                     Button(
-                        onClick = { onSave(current.toInt(), total.toInt()) },
+                        onClick = { onSave(current.toInt(), total.toInt(), time) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
@@ -128,6 +134,29 @@ fun PageDialog(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun TimeInput(show: Boolean, onTimeChange: (Int) -> Unit) {
+    AnimatedVisibility(show) {
+        Column {
+            Spacer(Modifier.height(32.dp))
+            Text(
+                text = "How much did you read today?",
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            TimePicker(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) { hour, minute ->
+                onTimeChange(hour * 60 + minute)
+            }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -229,7 +258,7 @@ private fun TextFieldDivider(modifier: Modifier = Modifier) {
 @Composable
 fun PageDialogPreview() {
     NeroTheme {
-        PageDialog(initialCurrentPage = 50, initialTotalPages = 200) { current, total ->
+        PageDialog(initialCurrentPage = 50, initialTotalPages = 200) { current, total, minutes ->
 
         }
     }

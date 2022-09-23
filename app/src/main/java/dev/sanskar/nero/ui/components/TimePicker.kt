@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +35,7 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import dev.sanskar.nero.ui.theme.NeroTheme
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -93,7 +93,6 @@ fun TimePicker(modifier: Modifier = Modifier, onSelectedIndex: (Int, Int) -> Uni
             .padding(vertical = 8.dp)
             .fillMaxWidth(0.7f),
         shape = RoundedCornerShape(4.dp),
-        elevation = 3.dp
     ) {
         Box {
             Row(

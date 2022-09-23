@@ -60,9 +60,9 @@ fun DetailScreen(
     if (showDialog) PageDialog(
         initialCurrentPage = viewModel.book.currentPage,
         initialTotalPages = viewModel.book.pageCount
-    ) { current, total->
+    ) { current, total, minutes ->
         showDialog = false
-        viewModel.updateProgress(bookId, current, total)
+        viewModel.updateProgress(bookId, current, total, minutes)
     }
 
     Column(
