@@ -13,7 +13,7 @@ data class GoogleBooksVolume(
 )
 
 data class VolumeInfo(
-    val authors: List<String>,
+    val authors: List<String> = emptyList(),
     val averageRating: Double = 0.0,
     val categories: List<String> = listOf(),
     val description: String = "",

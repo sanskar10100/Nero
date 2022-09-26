@@ -287,7 +287,7 @@ private fun Header(book: Book, modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             items(book.categories) {
-                Text(
+                if (it.isNotEmpty()) Text(
                     text = it,
                     style = MaterialTheme.typography.subtitle2,
                     modifier = Modifier

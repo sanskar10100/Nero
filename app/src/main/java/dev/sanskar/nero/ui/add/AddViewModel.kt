@@ -51,4 +51,12 @@ class AddViewModel @Inject constructor(
         searchQuery = ""
         googleBooksSearchResult.clear()
     }
+
+    fun addCustomBook(book: Book) {
+        viewModelScope.launch {
+            booksDao.insertBook(book.copy(
+                id = book.title + book.authors.joinToString(",") + book.pageCount,
+            ))
+        }
+    }
 }
