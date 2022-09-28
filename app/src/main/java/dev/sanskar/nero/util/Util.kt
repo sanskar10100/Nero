@@ -1,11 +1,15 @@
 package dev.sanskar.nero.util
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.core.content.FileProvider
+import java.io.File
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import retrofit2.HttpException
@@ -36,4 +40,10 @@ suspend fun <T> networkResult(call: suspend () -> T): UiState<T> {
             UiState.Error("An unexpected error occurred")
         }
     }
+}
+
+fun Context.getNewFileUri(): Uri {
+    val fileName = "image_${System.currentTimeMillis()}.jpg"
+    val file = File(filesDir, fileName)
+    return FileProvider.getUriForFile(this, "dev.sanskar.nero", file)
 }
