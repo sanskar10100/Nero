@@ -2,6 +2,7 @@ package dev.sanskar.nero.ui.detail
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -285,6 +286,7 @@ private fun Header(book: Book, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(16.dp))
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(book.categories) {
                 if (it.isNotEmpty()) Text(

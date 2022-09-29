@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -52,6 +54,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,6 +106,7 @@ fun AddCustomBookContent(
     var bookName by remember { mutableStateOf("") }
     var authorName by remember { mutableStateOf("") }
     var totalPageCount by remember { mutableStateOf("") }
+    var categories by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -169,10 +174,12 @@ fun AddCustomBookContent(
 
     val showAddButton by remember {
         derivedStateOf {
+            imageUri.isNotEmpty() &&
             bookName.isNotEmpty() &&
             authorName.isNotEmpty() &&
             totalPageCount.isNotEmpty() &&
-            totalPageCount.toIntOrNull() != null
+            totalPageCount.toIntOrNull() != null &&
+            categories.isNotEmpty()
         }
     }
 
@@ -200,7 +207,10 @@ fun AddCustomBookContent(
             label = { Text("Book Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            singleLine = true,
+            placeholder = { Text("e.g. A Brief History of Time") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         OutlinedTextField(
             value = authorName,
@@ -208,7 +218,10 @@ fun AddCustomBookContent(
             label = { Text("Author Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            singleLine = true,
+            placeholder = { Text("Separate multiple authors by commas") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         OutlinedTextField(
             value = totalPageCount,
@@ -216,7 +229,25 @@ fun AddCustomBookContent(
             label = { Text("Total Page Count") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            singleLine = true,
+            placeholder = { Text("e.g. 492") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            )
+        )
+
+        OutlinedTextField(
+            value = categories,
+            onValueChange = { categories = it },
+            label = { Text("Categories") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            singleLine = true,
+            placeholder = { Text("Separate multiple categories by commas") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
         AnimatedVisibility(showAddButton) {
@@ -226,7 +257,9 @@ fun AddCustomBookContent(
                         Book(
                             title = bookName,
                             authors = authorName.split(","),
-                            pageCount = totalPageCount.toInt()
+                            pageCount = totalPageCount.toInt(),
+                            categories = categories.split(","),
+                            thumbnail = imageUri
                         )
                     )
                     onSelected()
