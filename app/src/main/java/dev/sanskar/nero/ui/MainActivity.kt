@@ -81,13 +81,14 @@ class MainActivity : ComponentActivity() {
         BackHandler(bottomSheetState.targetValue == ModalBottomSheetValue.Expanded) {
             scope.launch {
                 bottomSheetState.hide()
+                keyboardController?.hide()
             }
         }
 
         LaunchedEffect(bottomSheetState.targetValue) {
             if (bottomSheetState.targetValue == ModalBottomSheetValue.Hidden) {
-                keyboardController?.hide()
                 addViewModel.clearSearchState()
+                keyboardController?.hide()
             } else {
                 keyboardController?.show()
             }

@@ -26,6 +26,7 @@ class AddViewModel @Inject constructor(
     var searchQuery by mutableStateOf("")
     val googleBooksSearchResult = mutableStateListOf<Book>()
 
+    var isAddingCustomBook by mutableStateOf(false)
 
     private var searchJob: Job? = null
 
@@ -50,6 +51,9 @@ class AddViewModel @Inject constructor(
     fun clearSearchState() {
         searchQuery = ""
         googleBooksSearchResult.clear()
+        isAddingCustomBook = false
+        searchJob?.cancel()
+        searchJob = null
     }
 
     fun addCustomBook(book: Book) {
