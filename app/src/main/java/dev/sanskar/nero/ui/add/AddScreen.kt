@@ -82,7 +82,8 @@ fun AddScreen(
         transitionSpec = {
             slideIntoContainer(AnimatedContentScope.SlideDirection.Up) +
                     fadeIn() with slideOutOfContainer(AnimatedContentScope.SlideDirection.Down) + fadeOut()
-        }
+        },
+        modifier = modifier
     ) {
         if (it) {
             AddCustomBookContent(viewModel, onSelected = onSelected)
