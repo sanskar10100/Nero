@@ -20,4 +20,7 @@ interface ProgressDao {
 
     @Query("SELECT SUM(pagesRead) FROM progress WHERE date >= :weekStart")
     suspend fun getPagesReadThisWeek(weekStart: Long): Int?
+
+    @Query("DELETE FROM progress WHERE bookId = :bookId")
+    suspend fun deleteBook(bookId: String)
 }
