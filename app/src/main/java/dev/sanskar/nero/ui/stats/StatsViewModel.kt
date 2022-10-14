@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sanskar.nero.db.ProgressDao
+import dev.sanskar.nero.util.toDayAndMonthAndYear
 import dev.sanskar.nero.util.toHourAndMinute
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -16,6 +17,7 @@ import java.time.temporal.TemporalAdjusters
 import java.util.Calendar
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class StatsViewModel @Inject constructor(
@@ -39,6 +41,7 @@ class StatsViewModel @Inject constructor(
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
+            Timber.d("Calculated Week Start Time: ${calendar.timeInMillis.toDayAndMonthAndYear()}")
             timeRead = progressDao.getMinutesReadThisWeek(calendar.timeInMillis)?.toHourAndMinute() ?: "0 h 0 m"
             pagesRead = progressDao.getPagesReadThisWeek(calendar.timeInMillis)?.toString() ?: "0"
         }
